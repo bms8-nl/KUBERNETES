@@ -1508,3 +1508,174 @@ The platform follows these resilience principles:
 - Backup and recovery processes are automated where practical.
 - Platform growth shall be achieved through horizontal scaling.
 
+
+---
+
+# 25. Architecture Decisions
+
+## 25.1 Overview
+
+Architectural decisions are documented using Architecture Decision Records (ADRs) to ensure consistency, traceability, and governance throughout the platform lifecycle.
+
+Significant changes to the platform architecture shall be reviewed, approved, and recorded before implementation.
+
+---
+
+## 25.2 Key Architectural Decisions
+
+| Decision Area | Selected Technology |
+|---------------|---------------------|
+| Virtualization | VMware vSphere |
+| Operating System | Ubuntu Server 24.04 LTS |
+| Kubernetes Distribution | Upstream Kubernetes (kubeadm) |
+| Container Runtime | containerd |
+| Identity Provider | Microsoft Entra ID |
+| Container Networking | Cilium |
+| Ingress Controller | NGINX Ingress Controller |
+| Storage | Longhorn |
+| GitOps | Argo CD |
+| Source Control | GitHub |
+| CI Platform | GitHub Actions |
+| Container Registry | Docker Hub |
+| Monitoring | Prometheus |
+| Dashboards | Grafana |
+| Logging | Loki |
+| Tracing | Tempo |
+| Runtime Security | Falco |
+| Policy Enforcement | Kyverno |
+| Certificate Management | cert-manager |
+| Backup and Recovery | Velero |
+
+---
+
+# 26. Technology Standards
+
+## 26.1 Infrastructure Standards
+
+| Standard | Requirement |
+|----------|-------------|
+| Hypervisor | VMware ESXi |
+| Virtualization Management | VMware vCenter |
+| Operating System | Ubuntu Server 24.04 LTS |
+| Time Synchronisation | NTP |
+| Name Resolution | Enterprise DNS |
+
+---
+
+## 26.2 Kubernetes Standards
+
+The platform shall:
+
+- Use upstream Kubernetes installed with kubeadm.
+- Use containerd as the container runtime.
+- Follow Kubernetes API best practices.
+- Adopt declarative configuration management.
+- Maintain version compatibility across platform components.
+
+---
+
+## 26.3 Engineering Standards
+
+Engineering practices include:
+
+- GitOps-first deployments.
+- Infrastructure as Code where applicable.
+- Peer review for all production changes.
+- Mandatory documentation updates with architectural changes.
+- Version-controlled configuration.
+- Automated validation through CI pipelines.
+
+---
+
+# 27. Governance and Compliance
+
+## 27.1 Governance
+
+Platform governance ensures that:
+
+- Architectural standards are consistently applied.
+- Platform changes are reviewed and approved.
+- Security policies are enforced.
+- Operational procedures are documented.
+- Platform documentation remains current.
+
+---
+
+## 27.2 Compliance Principles
+
+The platform is designed to support organisational and regulatory compliance by providing:
+
+- Centralised identity management.
+- Role-based access control.
+- Comprehensive audit logging.
+- Encrypted communications.
+- Controlled software delivery.
+- Policy-based workload governance.
+
+Specific regulatory frameworks shall be implemented according to organisational requirements.
+
+---
+
+# 28. Future Roadmap
+
+Potential future enhancements include:
+
+- Multi-cluster management.
+- Multi-region disaster recovery.
+- Service mesh implementation.
+- Workload identity federation.
+- Automated cluster lifecycle management.
+- AI-assisted operational analytics.
+- Platform self-service capabilities.
+- Expanded compliance automation.
+
+Future enhancements shall be evaluated through the Architecture Decision Record (ADR) process.
+
+---
+
+# 29. Glossary
+
+| Term | Definition |
+|------|------------|
+| ADR | Architecture Decision Record |
+| CNI | Container Network Interface |
+| GitOps | Git-based operational model for Kubernetes |
+| OIDC | OpenID Connect |
+| RBAC | Role-Based Access Control |
+| SSO | Single Sign-On |
+| HA | High Availability |
+| RTO | Recovery Time Objective |
+| RPO | Recovery Point Objective |
+| IaC | Infrastructure as Code |
+
+---
+
+# 30. References
+
+The following documents complement this architecture:
+
+- DOC-002 – Infrastructure Build Guide
+- DOC-003 – Kubernetes Installation Guide
+- DOC-004 – Platform Services
+- DOC-005 – GitOps and CI/CD
+- DOC-006 – Security Hardening
+- DOC-007 – Observability
+- DOC-008 – Operations Runbook
+- DOC-009 – Disaster Recovery
+- DOC-010 – Best Practices
+- ADR Repository
+
+---
+
+# 31. Conclusion
+
+This document defines the target enterprise architecture for the Kubernetes platform.
+
+It establishes the architectural principles, technology standards, governance model, operational objectives, and security foundations required to build, operate, and evolve a production-grade Kubernetes environment.
+
+All subsequent platform documentation shall align with the architecture defined in this document. Changes that materially affect the architecture shall be reviewed, approved, and documented through the established Architecture Decision Record (ADR) process.
+
+---
+
+**End of Document**
+
