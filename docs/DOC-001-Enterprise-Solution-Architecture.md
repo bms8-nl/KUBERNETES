@@ -639,3 +639,150 @@ Service discovery shall use DNS names rather than IP addresses.
 - Business applications remain independent of infrastructure implementation.
 - Logical isolation supports future multi-environment expansion.
 
+
+---
+
+# 19. Network Architecture
+
+## 19.1 Overview
+
+The Enterprise Kubernetes Platform uses a layered network architecture to provide secure, scalable, and manageable communication between users, platform services, and application workloads.
+
+The networking model separates external traffic, cluster traffic, and storage traffic while maintaining secure communication paths throughout the platform.
+
+---
+
+## 19.2 Network Components
+
+| Component | Technology |
+|-----------|------------|
+| External Load Balancer | NGINX |
+| Ingress Controller | NGINX Ingress Controller |
+| Container Network Interface | Cilium |
+| Service Discovery | Kubernetes DNS |
+| Internal Service Networking | ClusterIP Services |
+| Network Policies | Cilium Network Policies |
+
+---
+
+## 19.3 Network Zones
+
+| Zone | Description |
+|------|-------------|
+| External Network | User and Internet traffic |
+| DMZ | External NGINX Load Balancer |
+| Kubernetes Cluster Network | Worker and Control Plane communication |
+| Pod Network | Pod-to-Pod communication |
+| Service Network | ClusterIP Services |
+| Storage Network | Longhorn replication traffic |
+
+---
+
+## 19.4 High-Level Network Flow
+
+```text
+Internet / Enterprise Users
+            │
+            ▼
+External NGINX Load Balancer
+            │
+            ▼
+NGINX Ingress Controller
+            │
+            ▼
+Kubernetes Service (ClusterIP)
+            │
+            ▼
+Application Pods
+            │
+            ▼
+Database Service
+            │
+            ▼
+Longhorn Persistent Storage
+```
+
+---
+
+## 19.5 Traffic Flow
+
+### Inbound Traffic
+
+Browser
+
+↓
+
+External NGINX
+
+↓
+
+Ingress Controller
+
+↓
+
+ClusterIP Service
+
+↓
+
+Application Pods
+
+---
+
+### East-West Traffic
+
+- Frontend communicates with Backend.
+- Backend communicates with Database.
+- Platform services communicate through Kubernetes Services.
+- Pod communication occurs over the Cilium network.
+
+---
+
+### Outbound Traffic
+
+Application workloads may initiate outbound HTTPS connections for:
+
+- Microsoft Entra ID authentication
+- Docker Hub image retrieval
+- GitHub access
+- Operating system package updates
+
+Outbound access shall be controlled through enterprise firewall policies.
+
+---
+
+## 19.6 Service Discovery
+
+Internal communication uses Kubernetes DNS.
+
+Example service names:
+
+- frontend.application.svc.cluster.local
+- backend.application.svc.cluster.local
+- database.application.svc.cluster.local
+
+Application configuration shall reference service names rather than IP addresses.
+
+---
+
+## 19.7 Cilium Networking
+
+Cilium provides:
+
+- eBPF-based networking
+- Network Policy enforcement
+- High-performance packet processing
+- Service load balancing
+- Network observability through Hubble
+
+---
+
+## 19.8 Network Design Principles
+
+- All external traffic enters through the External NGINX Load Balancer.
+- All HTTP/HTTPS traffic is routed through the NGINX Ingress Controller.
+- Internal communication uses ClusterIP Services.
+- Pod IP addresses are not used directly by applications.
+- Network Policies restrict unnecessary communication between workloads.
+- DNS-based service discovery is mandatory.
+- Network design must support horizontal scaling without reconfiguration.
+
