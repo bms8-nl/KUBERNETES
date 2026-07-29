@@ -1368,3 +1368,143 @@ Alert routing shall follow organisational incident management procedures.
 - Alerts focus on actionable operational events.
 - Observability data supports troubleshooting, auditing, and capacity planning.
 
+
+---
+
+# 24. High Availability, Scalability and Disaster Recovery
+
+## 24.1 Overview
+
+The Enterprise Kubernetes Platform is designed to provide high availability, operational resilience, and horizontal scalability while supporting disaster recovery objectives.
+
+The architecture minimises single points of failure and enables rapid recovery from infrastructure, platform, and application failures.
+
+---
+
+## 24.2 High Availability Objectives
+
+The platform is designed to achieve the following objectives:
+
+- Minimise planned downtime.
+- Minimise unplanned outages.
+- Eliminate avoidable single points of failure.
+- Support rolling maintenance.
+- Support zero or minimal application downtime during upgrades.
+- Provide resilient platform services.
+
+---
+
+## 24.3 High Availability Architecture
+
+| Component | High Availability Strategy |
+|-----------|----------------------------|
+| External Load Balancer | Redundant NGINX instances |
+| Kubernetes Control Plane | Expandable to multiple control-plane nodes |
+| Worker Nodes | Multiple worker nodes |
+| NGINX Ingress Controller | Multiple replicas |
+| Argo CD | Multiple replicas |
+| Prometheus | Persistent storage with backup |
+| Grafana | Multiple replicas |
+| Longhorn | Replicated storage volumes |
+
+---
+
+## 24.4 Scalability Strategy
+
+The platform supports horizontal scaling through Kubernetes-native capabilities.
+
+| Resource | Scaling Method |
+|----------|----------------|
+| Applications | Replica scaling |
+| Worker Nodes | Add additional nodes |
+| Platform Services | Replica scaling |
+| Storage | Expand Longhorn capacity |
+| Networking | Cilium cluster expansion |
+
+Scaling operations shall not require application redesign.
+
+---
+
+## 24.5 Self-Healing
+
+Kubernetes continuously monitors workloads and automatically performs recovery actions.
+
+Self-healing capabilities include:
+
+- Automatic pod restart
+- Replica reconciliation
+- Failed node workload rescheduling
+- Health probe monitoring
+- Deployment rollback
+- Service endpoint updates
+
+---
+
+## 24.6 Backup Strategy
+
+Platform backup shall include:
+
+| Component | Backup Method |
+|-----------|---------------|
+| Kubernetes Resources | Velero |
+| Persistent Volumes | Velero with storage snapshots |
+| Git Repositories | GitHub repository protection |
+| Configuration | GitOps repositories |
+| Monitoring Data | Scheduled backup |
+| Longhorn Volumes | Snapshot and backup policies |
+
+Backup frequency and retention shall follow organisational policies.
+
+---
+
+## 24.7 Disaster Recovery
+
+Disaster recovery planning addresses:
+
+- Infrastructure failure
+- Node failure
+- Storage failure
+- Kubernetes component failure
+- Accidental deletion
+- Configuration corruption
+- Complete site recovery
+
+Recovery procedures are documented separately in the Disaster Recovery Guide.
+
+---
+
+## 24.8 Recovery Objectives
+
+Recovery objectives shall be defined according to business requirements.
+
+| Objective | Description |
+|-----------|-------------|
+| Recovery Time Objective (RTO) | Maximum acceptable recovery time |
+| Recovery Point Objective (RPO) | Maximum acceptable data loss |
+
+Target RTO and RPO values shall be approved by business stakeholders.
+
+---
+
+## 24.9 Resilience Principles
+
+The platform follows these resilience principles:
+
+- Avoid single points of failure.
+- Automate recovery wherever possible.
+- Maintain recoverable infrastructure as code.
+- Protect persistent application data.
+- Regularly validate backup and recovery procedures.
+- Design for operational continuity during maintenance.
+
+---
+
+## 24.10 Architectural Principles
+
+- High availability is designed into every platform layer.
+- Platform services are independently scalable.
+- Disaster recovery procedures are documented and regularly tested.
+- GitOps repositories remain the authoritative source of configuration.
+- Backup and recovery processes are automated where practical.
+- Platform growth shall be achieved through horizontal scaling.
+
