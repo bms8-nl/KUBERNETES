@@ -921,3 +921,166 @@ Passwords, tokens, and certificates shall be encrypted in transit and at rest.
 - Administrative access shall be tightly controlled and audited.
 - All privileged actions shall be traceable.
 
+
+---
+
+# 21. Security Architecture
+
+## 21.1 Overview
+
+Security is implemented using a defence-in-depth approach that protects the infrastructure, Kubernetes platform, workloads, network, data, and software supply chain.
+
+Multiple independent security controls ensure that the compromise of a single component does not expose the entire platform.
+
+---
+
+## 21.2 Security Layers
+
+| Layer | Primary Controls |
+|--------|------------------|
+| Physical Infrastructure | VMware security, data centre controls |
+| Operating System | Ubuntu hardening, CIS benchmarks |
+| Kubernetes | RBAC, admission control, namespaces |
+| Network | Cilium Network Policies, Ingress control |
+| Workloads | Pod Security Standards, least privilege |
+| Supply Chain | Image scanning and signed deployments |
+| Monitoring | Runtime detection and audit logging |
+
+---
+
+## 21.3 Security Components
+
+| Component | Purpose |
+|-----------|---------|
+| Kyverno | Policy enforcement |
+| Falco | Runtime threat detection |
+| Trivy | Container image vulnerability scanning |
+| Cilium | Network policy enforcement |
+| Kubernetes RBAC | Authorization |
+| Microsoft Entra ID | Authentication |
+| cert-manager | Certificate lifecycle management |
+
+---
+
+## 21.4 Defence in Depth
+
+Security controls exist at every layer.
+
+```text
+Users
+   │
+Authentication (Microsoft Entra ID)
+   │
+Authorization (RBAC)
+   │
+Network Policies (Cilium)
+   │
+Admission Policies (Kyverno)
+   │
+Runtime Detection (Falco)
+   │
+Monitoring & Audit
+```
+
+Each layer provides additional protection against unauthorized access and malicious activity.
+
+---
+
+## 21.5 Workload Security
+
+Application workloads shall comply with the following requirements:
+
+- Run as non-root users.
+- Use read-only root filesystems where possible.
+- Drop unnecessary Linux capabilities.
+- Define CPU and memory requests and limits.
+- Avoid privileged containers.
+- Avoid host networking unless explicitly approved.
+- Use approved container images only.
+
+---
+
+## 21.6 Image Security
+
+All container images shall:
+
+- Be built through approved CI pipelines.
+- Be scanned using Trivy before deployment.
+- Be stored in approved container registries.
+- Use immutable version tags.
+- Exclude known critical vulnerabilities.
+
+Images failing security validation shall not be deployed.
+
+---
+
+## 21.7 Policy Enforcement
+
+Kyverno policies shall enforce:
+
+- Approved container registries.
+- Required resource limits.
+- Mandatory labels.
+- Non-root execution.
+- Restricted host access.
+- Pod Security Standards.
+- Image verification policies.
+
+Policy violations shall prevent deployment.
+
+---
+
+## 21.8 Runtime Security
+
+Falco continuously monitors:
+
+- Unexpected process execution.
+- Privilege escalation attempts.
+- Container breakout behaviour.
+- Sensitive file access.
+- Suspicious network activity.
+- Kubernetes API misuse.
+
+Security events shall be forwarded to the monitoring platform for investigation.
+
+---
+
+## 21.9 Encryption
+
+Encryption shall be enabled for:
+
+| Data | Protection |
+|------|------------|
+| User Traffic | TLS 1.2 or later |
+| API Communication | HTTPS |
+| Secrets | Kubernetes encryption at rest |
+| Persistent Storage | Storage platform encryption where supported |
+| Identity Tokens | OIDC with signed tokens |
+
+---
+
+## 21.10 Logging and Auditing
+
+The platform shall retain audit records for:
+
+- User authentication
+- Administrative actions
+- Kubernetes API activity
+- Deployment events
+- Policy violations
+- Runtime security alerts
+
+Logs shall be collected centrally and protected against unauthorized modification.
+
+---
+
+## 21.11 Security Design Principles
+
+- Default deny wherever practical.
+- Least privilege applies to users and workloads.
+- Every deployment is verified before execution.
+- Runtime behaviour is continuously monitored.
+- Security policies are enforced automatically.
+- Identity is centrally managed.
+- All privileged operations are auditable.
+
