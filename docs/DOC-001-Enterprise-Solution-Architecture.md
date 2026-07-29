@@ -786,3 +786,138 @@ Cilium provides:
 - DNS-based service discovery is mandatory.
 - Network design must support horizontal scaling without reconfiguration.
 
+
+---
+
+# 20. Identity and Access Management
+
+## 20.1 Overview
+
+Identity and Access Management (IAM) is implemented using Microsoft Entra ID as the enterprise Identity Provider (IdP). Authentication is centralized through OpenID Connect (OIDC), while authorization is enforced using Kubernetes Role-Based Access Control (RBAC).
+
+This approach provides a single identity source, centralized access management, multi-factor authentication, and enterprise auditing.
+
+---
+
+## 20.2 Identity Architecture
+
+| Component | Technology |
+|-----------|------------|
+| Identity Provider | Microsoft Entra ID |
+| Authentication Protocol | OpenID Connect (OIDC) |
+| Authentication | Single Sign-On (SSO) |
+| Multi-Factor Authentication | Microsoft Entra ID |
+| Authorization | Kubernetes RBAC |
+
+---
+
+## 20.3 Authentication Flow
+
+1. User accesses the Kubernetes platform.
+2. Authentication request is redirected to Microsoft Entra ID.
+3. User successfully authenticates using enterprise credentials.
+4. Microsoft Entra ID returns an OIDC token.
+5. Kubernetes validates the token.
+6. Kubernetes RBAC determines the user's permissions.
+7. Access is granted or denied.
+
+---
+
+## 20.4 Authorization Model
+
+Authorization is based on Kubernetes RBAC.
+
+| Role | Responsibilities |
+|------|------------------|
+| Platform Administrator | Full platform administration |
+| Platform Engineer | Cluster operations and platform services |
+| Application Administrator | Application deployment and management |
+| Developer | Deploy applications through GitOps only |
+| Viewer | Read-only access |
+
+Direct cluster administration shall be restricted to Platform Administrators.
+
+---
+
+## 20.5 Access Principles
+
+The platform adopts the following security principles:
+
+- Least Privilege
+- Zero Trust
+- Centralized Identity
+- Single Sign-On
+- Multi-Factor Authentication
+- Role Separation
+- Auditability
+
+---
+
+## 20.6 GitHub Access
+
+GitHub shall integrate with Microsoft Entra ID where supported.
+
+Branch protection policies shall enforce:
+
+- Pull Requests for all production changes
+- Mandatory code review
+- Successful CI validation
+- Protected main branch
+- No direct commits to production branches
+
+---
+
+## 20.7 Argo CD Authentication
+
+Argo CD authentication shall use Microsoft Entra ID through OIDC.
+
+Role mappings shall control:
+
+- Platform Administration
+- Application Administration
+- Read-Only Access
+
+Git repositories remain the single source of truth for deployments.
+
+---
+
+## 20.8 Kubernetes RBAC
+
+RBAC permissions shall be assigned to Entra ID groups rather than individual users.
+
+Example mapping:
+
+| Entra ID Group | Kubernetes Role |
+|----------------|-----------------|
+| Platform-Admins | cluster-admin |
+| Platform-Engineers | platform-admin |
+| Developers | application-deployer |
+| Operations | platform-operator |
+| Auditors | view |
+
+---
+
+## 20.9 Secrets Management
+
+Sensitive information shall never be stored in Git repositories.
+
+Secrets shall be managed using:
+
+- Kubernetes Secrets
+- External Secrets Operator
+- Enterprise Secret Store (future enhancement)
+
+Passwords, tokens, and certificates shall be encrypted in transit and at rest.
+
+---
+
+## 20.10 Identity Design Principles
+
+- Microsoft Entra ID is the authoritative identity source.
+- Authentication is centralized.
+- Authorization is enforced through Kubernetes RBAC.
+- Human users authenticate through SSO.
+- Service accounts are used for workload identity.
+- Administrative access shall be tightly controlled and audited.
+- All privileged actions shall be traceable.
+
