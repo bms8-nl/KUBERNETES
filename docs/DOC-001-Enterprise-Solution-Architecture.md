@@ -1084,3 +1084,138 @@ Logs shall be collected centrally and protected against unauthorized modificatio
 - Identity is centrally managed.
 - All privileged operations are auditable.
 
+
+---
+
+# 22. Platform Services Architecture
+
+## 22.1 Overview
+
+The Enterprise Kubernetes Platform provides a standardized set of platform services that are shared by all application workloads. These services deliver networking, storage, observability, GitOps, security, certificate management, and operational capabilities.
+
+Platform services are deployed independently from business applications to simplify lifecycle management, upgrades, and operational ownership.
+
+---
+
+## 22.2 Platform Service Catalogue
+
+| Service | Technology | Purpose |
+|----------|------------|---------|
+| Ingress | NGINX Ingress Controller | External HTTP/HTTPS routing |
+| Networking | Cilium | Pod networking and Network Policies |
+| Storage | Longhorn | Distributed persistent storage |
+| GitOps | Argo CD | Continuous deployment |
+| Monitoring | Prometheus | Metrics collection |
+| Dashboards | Grafana | Visualization and dashboards |
+| Logging | Loki | Centralized log aggregation |
+| Tracing | Tempo | Distributed tracing |
+| Alerting | Alertmanager | Operational alerting |
+| Certificates | cert-manager | TLS certificate lifecycle |
+| Policy Engine | Kyverno | Policy enforcement |
+| Runtime Security | Falco | Runtime threat detection |
+
+---
+
+## 22.3 Service Deployment Model
+
+Platform services are deployed within dedicated Kubernetes namespaces to provide operational isolation.
+
+| Namespace | Platform Service |
+|-----------|------------------|
+| ingress-nginx | NGINX Ingress Controller |
+| longhorn-system | Longhorn |
+| argocd | Argo CD |
+| monitoring | Prometheus, Grafana, Loki, Tempo, Alertmanager |
+| cert-manager | cert-manager |
+| kyverno | Kyverno |
+| falco | Falco |
+
+Application workloads shall not be deployed into platform namespaces.
+
+---
+
+## 22.4 Service Relationships
+
+```text
+                    Microsoft Entra ID
+                           │
+                           ▼
+                        Argo CD
+                           │
+                           ▼
+                     Kubernetes API
+                           │
+      ┌────────────────────┼────────────────────┐
+      │                    │                    │
+      ▼                    ▼                    ▼
+NGINX Ingress         Monitoring Stack      Security Stack
+      │                    │                    │
+      ▼                    ▼                    ▼
+Application Pods      Metrics & Logs      Policy Enforcement
+      │
+      ▼
+ Longhorn Storage
+```
+
+---
+
+## 22.5 Platform Service Dependencies
+
+| Service | Depends On |
+|----------|------------|
+| NGINX Ingress Controller | Kubernetes, Cilium |
+| Longhorn | Kubernetes, Worker Nodes |
+| Argo CD | Kubernetes API, GitHub |
+| Prometheus | Kubernetes API |
+| Grafana | Prometheus, Loki, Tempo |
+| Loki | Kubernetes |
+| Tempo | Kubernetes |
+| Alertmanager | Prometheus |
+| Kyverno | Kubernetes Admission Controller |
+| Falco | Kubernetes Worker Nodes |
+| cert-manager | Kubernetes API |
+
+---
+
+## 22.6 Operational Characteristics
+
+Platform services shall:
+
+- Support rolling upgrades.
+- Be deployed with high availability where applicable.
+- Expose health and readiness probes.
+- Publish operational metrics.
+- Generate audit and operational logs.
+- Follow GitOps deployment practices.
+- Support disaster recovery procedures.
+
+---
+
+## 22.7 High Availability
+
+Critical platform services shall support high availability.
+
+| Service | High Availability Requirement |
+|----------|-------------------------------|
+| NGINX Ingress Controller | Multiple replicas |
+| Argo CD | Multiple replicas |
+| Prometheus | Persistent storage |
+| Grafana | Multiple replicas |
+| Loki | Persistent storage |
+| Tempo | Persistent storage |
+| Longhorn | Replicated volumes |
+
+---
+
+## 22.8 Platform Service Principles
+
+The platform service architecture follows these principles:
+
+- Shared platform capabilities are centrally managed.
+- Platform services remain independent of application releases.
+- Services are deployed through GitOps.
+- Platform services are observable by default.
+- Security controls are integrated into the platform.
+- Operational ownership is clearly defined.
+- Services are designed for scalability and resilience.
+
